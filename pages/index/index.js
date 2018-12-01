@@ -74,14 +74,14 @@ Page({
           console.log(res)
           let auth=res.authSetting['scope.userLocation']
           if(auth){
-            this.location()
+            this.getCityAndWeather()
           }
         }
       })
     else
-      this.location()
+      this.getCityAndWeather()
   },
-  location(){
+  getCityAndWeather(){
     wx.getLocation({
       success: res => {
         console.log(res.latitude, res.longitude)
@@ -136,7 +136,20 @@ Page({
     this.qqmapsdk=new QQMapWX({
       key:'5SKBZ-B53WP-VCXDA-V4GAD-RBQSH-X7FEB'
     })
-    this.getNow()
+    wx.getSetting({
+      success:res=>{
+        let auth=res.authSetting['scope.userLocation']
+        console.log(auth)
+        this.setData({
+          locationAuthType:(auth===false)?UNAUTHORIZED:UNPROMPTED,
+          tipText:(auth===false)?UNAUTHORIZED_TIPS:UNPROMPTED_TIPS
+        })
+        if(auth)
+          this.getCityAndWeather()
+        else
+          this.getNow()
+      }
+    })
   },
   data:{
     nowTemp:'14°',
