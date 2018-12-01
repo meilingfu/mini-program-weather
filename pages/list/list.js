@@ -6,7 +6,6 @@ Page({
     city:'广州市'
   },
   onLoad(options){
-    console.log('second onload')
     console.log(options.city)
     this.setData({
       city:options.city

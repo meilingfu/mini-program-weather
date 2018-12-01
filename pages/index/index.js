@@ -17,13 +17,10 @@ const weatherColorMap={
 }
 
 const QQMapWX=require('../../libs/qqmap-wx-jssdk.js')
-
-const UNPROMPTED=0
-const UNAUTHORIZED=1
-const AUTHORIZED=2
-const UNPROMPTED_TIPS='点击获取当前位置'
-const UNAUTHORIZED_TIPS='点击开启位置权限'
-const AUTHORIZED_TIPS=''
+const UNPROMPTED = 0
+const UNAUTHORIZED = 1
+const UNPROMPTED_TIPS = '点击获取当前位置'
+const UNAUTHORIZED_TIPS = '点击开启位置权限'
 
 Page({
   setNow(result){
@@ -72,7 +69,15 @@ Page({
   },
   onTapLocation() {
     if(this.data.locationAuthType===UNAUTHORIZED)
-      wx.openSetting()
+      wx.openSetting({
+        success:res=>{
+          console.log(res)
+          let auth=res.authSetting['scope.userLocation']
+          if(auth){
+            this.location()
+          }
+        }
+      })
     else
       this.location()
   },
@@ -98,8 +103,8 @@ Page({
       },
       fail: () => {
         this.setData({
-          locationAuthType: UNAUTHORIZED,
-          tipText: UNAUTHORIZED_TIPS
+          locationAuthType:UNAUTHORIZED,
+          tipText:UNAUTHORIZED_TIPS
         })
       }
     })
@@ -127,29 +132,11 @@ Page({
       wx.stopPullDownRefresh()
     })
   },
-  onShow(){
-    console.log('onShow')
-    wx.getSetting({
-      success:res=>{
-        let auth=res.authSetting['scope.userLocation']
-        console.log(auth)
-        if(auth && this.data.locationAuthType===UNAUTHORIZED){
-          //权限从无到有
-          this.setData({
-            locationAuthType:UNPROMPTED,
-            tipText:UNPROMPTED_TIPS
-          })
-          this.location()
-        }
-      }
-    })
-  },
   onLoad(){
     this.qqmapsdk=new QQMapWX({
       key:'5SKBZ-B53WP-VCXDA-V4GAD-RBQSH-X7FEB'
     })
     this.getNow()
-    console.log('first onload')
   },
   data:{
     nowTemp:'14°',
