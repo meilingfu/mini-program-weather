@@ -19,8 +19,6 @@ const weatherColorMap={
 const QQMapWX=require('../../libs/qqmap-wx-jssdk.js')
 const UNPROMPTED = 0
 const UNAUTHORIZED = 1
-const UNPROMPTED_TIPS = '点击获取当前位置'
-const UNAUTHORIZED_TIPS = '点击开启位置权限'
 
 Page({
   setNow(result){
@@ -103,8 +101,7 @@ Page({
       },
       fail: () => {
         this.setData({
-          locationAuthType:UNAUTHORIZED,
-          tipText:UNAUTHORIZED_TIPS
+          locationAuthType:UNAUTHORIZED
         })
       }
     })
@@ -141,8 +138,7 @@ Page({
         let auth=res.authSetting['scope.userLocation']
         console.log(auth)
         this.setData({
-          locationAuthType:(auth===false)?UNAUTHORIZED:UNPROMPTED,
-          tipText:(auth===false)?UNAUTHORIZED_TIPS:UNPROMPTED_TIPS
+          locationAuthType:(auth===false)?UNAUTHORIZED:UNPROMPTED
         })
         if(auth)
           this.getCityAndWeather()
@@ -160,7 +156,6 @@ Page({
     todayTemp:' ',
     city:'广州市',
     number:0.5,
-    locationAuthType:UNPROMPTED,
-    tipText:UNPROMPTED_TIPS
+    locationAuthType:UNPROMPTED
   }
 })
